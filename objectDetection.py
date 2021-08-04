@@ -57,7 +57,14 @@ while True:
         
         #cascade den gelen yüz etrafına bir dikdörtgen çizdiriyoruz
         for (x,y,w,h) in Rect:
+            cv2.putText(frame, "Araba", (x,y-10), cv2.FONT_HERSHEY_COMPLEX_SMALL, 0.7, (0,255,0))
+        #    cv2.putText(frame, "Yaya", (x,y-10), cv2.FONT_HERSHEY_COMPLEX_SMALL, 0.7, (0,255,0))
             cv2.rectangle(frame,(x,y),(x+w,y+h),(0,255,0),5)
+        
+        #for (x,y,w,h) in pedestrianRect:
+        #   cv2.putText(frame, "Yaya", (x+w-10,y-10), cv2.FONT_HERSHEY_COMPLEX_SMALL, 0.7, (0,0,255))
+        #   cv2.rectangle(frame,(x,y),(x+w,y+h),(0,0,255),8)
+        
         resize=cv2.resize(frame, dsize=(640,480))
         cv2.imshow("Sonuc",resize)
         
