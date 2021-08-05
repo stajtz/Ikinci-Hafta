@@ -27,7 +27,7 @@ Benim gözlemlerim
 MOSSE, BOOSTING, MIL, TLD, MEDIANFLOW, CSRT: Araç görüntüden çıktıktan sonra takip için oluşturulan bounding box başka nesneler için ekranda kaldı.
 MOSSE, KCF: Araç gözden kaybolunca bounding box da ekrandan kayboldu.
 
-Bu bilgiler ve gözlerimlerim sonucunda projenin şuanki aşamasında KCF kullanmaya karar verdim
+Bu bilgiler ve gözlerimlerim sonucunda projenin şuanki aşamasında KCF kullanmaya karar verdim.
 
 Kaynak
 
