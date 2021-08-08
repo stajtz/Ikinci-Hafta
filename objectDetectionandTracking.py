@@ -1,11 +1,19 @@
 import cv2
 import numpy as np
+
 # Nesne tanıması için cascade mizi okuyoruz
 carsCascade = cv2.CascadeClassifier("cars.xml")
 
+#kendi yaptığım cascade
+carsCascade2=cv2.CascadeClassifier("cascade.xml")
+
 
 # Yaya için cascade
-# bodyCascade=cv2.CascadeClassifier("body.xml")
+#bodyCascade=cv2.CascadeClassifier("body.xml")
+
+# Yaya Tespiti için farklı bir algoritma
+#hog=cv2.HOGDescriptor()
+#hog.setSVMDetector(cv2.HOGDescriptor_getDefaultPeopleDetector())
 
 def empty(a): pass
 
@@ -20,9 +28,7 @@ cv2.createTrackbar("Scale", "Sonuc", 400, 1000, empty)
 cv2.createTrackbar("Neighb/Box", "Sonuc", 4, 50, empty)
 key = None
 
-# Yaya Tespiti için farklı bir algoritma
-# hog=cv2.HOGDescriptor()
-# hog.setSVMDetector(cv2.HOGDescriptor_getDefaultPeopleDetector())
+
 
 opencvTrackers={"boosting":cv2.legacy.TrackerBoosting_create(),
                 "mil":cv2.legacy.TrackerMIL_create(),
@@ -56,7 +62,7 @@ track=False
 while True:
     # kameradan görüntü bilgisini değişkenlere atıyoruz
     success, frame = capture.read()
-    key = cv2.waitKey(1)
+    key = cv2.waitKey(8)
     # trackbarlardaki bilgiyi alıyoruz
     scaleVal = 1 + (cv2.getTrackbarPos("Scale", "Sonuc") / 1000)
     neighbor = cv2.getTrackbarPos("Neighb/Box", "Sonuc")
@@ -68,7 +74,7 @@ while True:
         frame = cv2.resize(frame, dsize=(1280, 720))
 
         # a tusuna basilinca obje seçmeyi sağlar
-        if cv2.waitKey(33) == ord("a"):
+        if key == ord("a"):
             track=True
             bbox = cv2.selectROI("Sonuc", frame, False)
             tracker.init(frame, bbox)
@@ -93,28 +99,32 @@ while True:
             Rect = carsCascade.detectMultiScale(frame, scaleVal, neighbor)
     
             # Yaya yakalaması için
-            # Rect=bodyCascade.detectMultiScale(frame,scaleVal,neighbor)
+            #Rect=bodyCascade.detectMultiScale(frame,scaleVal,neighbor)
     
             # Yaya yakalaması için obür algoritma
-            # pedestrianRect,weight=hog.detectMultiScale(frame,padding=(neighbor,neighbor),scale=scaleVal)
+            #pedestrianRect,weight=hog.detectMultiScale(frame,padding=(neighbor,neighbor),scale=scaleVal)
     
             # cascade den gelen Nesne etrafına bir dikdörtgen çizdiriyoruz
     
             for (x, y, w, h) in Rect:
                 cv2.putText(frame, "Araba", (x, y - 10), cv2.FONT_HERSHEY_COMPLEX_SMALL, 0.7, (0, 255, 0))
-                #    cv2.putText(frame, "Yaya", (x,y-10), cv2.FONT_HERSHEY_COMPLEX_SMALL, 0.7, (0,255,0))
+                #cv2.putText(frame, "Yaya", (x,y-10), cv2.FONT_HERSHEY_COMPLEX_SMALL, 0.7, (0,255,0))
                 cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 5)
-    
-            # for (x,y,w,h) in pedestrianRect:
-            #   cv2.putText(frame, "Yaya", (x+w-10,y-10), cv2.FONT_HERSHEY_COMPLEX_SMALL, 0.7, (0,0,255))
-            #   cv2.rectangle(frame,(x,y),(x+w,y+h),(0,0,255),8)
+                
+            Rect = carsCascade2.detectMultiScale(frame, scaleVal, neighbor)
+            for (x,y,w,h) in Rect:
+                cv2.putText(frame, "Araba", (x, y+w +20), cv2.FONT_HERSHEY_COMPLEX_SMALL, 0.7, (0, 0, 255))
+                cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 0, 255), 2)
+            #for (x,y,w,h) in pedestrianRect:
+            #    cv2.putText(frame, "Yaya", (x+w-40,y-10), cv2.FONT_HERSHEY_COMPLEX_SMALL, 0.7, (0,0,255))
+            #    cv2.rectangle(frame,(x,y),(x+w,y+h),(0,0,255),3)
     
         
 
         cv2.imshow("Sonuc", frame)
 
     # klavyeden bir tuşa basılırsa değişkene atıyoruz ve q harfine basılırsa kameradan görüntü almayı durdurup oluşturduğumuz ekranları kapıyoruz
-    key = cv2.waitKey(1)
+   
     if key == ord("q"): break
 
 capture.release()
